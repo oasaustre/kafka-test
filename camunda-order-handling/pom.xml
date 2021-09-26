@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.4.2</version> <!-- en el ejemplo es 2.4.2, el original es 2.5.4 -->
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>com.example</groupId>
+	<artifactId>camunda-order-handling</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>camunda-order-handling</name>
+	<description>Demo project for Spring Boot and Camunda</description>
+
+
+    <packaging>jar</packaging>
+
+	<properties>
+	    <camunda.platform.version>7.15.0</camunda.platform.version>
+ 	    <spring.boot.version>2.4.2</spring.boot.version> <!-- en el ejemplo es 2.4.2, el original es 2.5.4 -->
+	    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version> <!-- en el ejemplo es 3.8.1, el original es 4.0.0 -->
+	    <java.version>8</java.version> <!-- en el ejemplo es 8, el original es 11 -->
+	</properties>
+
+	<dependencies>
+		<dependency> <!-- original -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency> <!-- original -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	    <dependency>
+	      <groupId>org.camunda.bpm.springboot</groupId>
+	      <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
+	    </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+			  <groupId>org.springframework.boot</groupId>
+			  <artifactId>spring-boot-maven-plugin</artifactId>
+			  <version>${spring.boot.version}</version>
+			  <executions>
+			    <execution>
+			      <goals>
+			        <goal>repackage</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			</plugin>
+			
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-compiler-plugin</artifactId>
+			  <version>${maven.compiler.plugin.version}</version>
+			  <configuration>
+			    <source>${java.version}</source>
+			    <target>${java.version}</target>
+			  </configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.camunda.bpm</groupId>
+        <artifactId>camunda-bom</artifactId>
+        <version>${camunda.platform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+</project>
