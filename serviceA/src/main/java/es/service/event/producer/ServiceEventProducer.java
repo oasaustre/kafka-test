@@ -1,4 +1,4 @@
-package es.camunda.workflow.event.producer;
+package es.service.event.producer;
 
 import java.util.List;
 
@@ -15,28 +15,26 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.camunda.workflow.event.domain.WorkflowEvent;
+import es.service.event.domain.MessageWFResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class WorkflowProducer {
-
-	
-	//@Autowired
+public class ServiceEventProducer {
+	@Autowired
 	KafkaTemplate<String,String> kafkaTemplate;
 	
-	private String topic = "workflow-topic";
+	private String wf_topic = "wf-topic";
 	
 	@Autowired
 	ObjectMapper objectMapper;
 	
 	
-	public void sendWorkflowEvent(WorkflowEvent workflowEvent) throws JsonProcessingException {
-		String key = workflowEvent.getProcessInstanceId();
-		String value = objectMapper.writeValueAsString(workflowEvent);
+	public void sendWfEvent(MessageWFResponse message) throws JsonProcessingException {
+		String key = message.getWorflowEvent().getProcessInstanceId();
+		String value = objectMapper.writeValueAsString(message);
 		
-		ProducerRecord<String,String> producerRecord = buildProducerRecord(topic,key,value);
+		ProducerRecord<String,String> producerRecord = buildProducerRecord(wf_topic,key,value);
 		
 		ListenableFuture<SendResult<String, String>> listenableFuture =
 				kafkaTemplate.send(producerRecord);
@@ -74,6 +72,5 @@ public class WorkflowProducer {
 		log.info("Message sent successfully for the key: {} and the value is {}, particion is {}",key,value,result.getRecordMetadata().partition());
 		
 	}
-	
 
 }

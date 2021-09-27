@@ -1,4 +1,4 @@
-package es.camunda.workflow.event.producer;
+package es.orchestration.event.producer;
 
 import java.util.List;
 
@@ -14,29 +14,28 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import es.camunda.workflow.event.domain.WorkflowEvent;
+import es.orchestration.event.domain.WorkflowEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class WorkflowProducer {
+public class WorkflowOrchestrationProducer {
 
 	
-	//@Autowired
+	@Autowired
 	KafkaTemplate<String,String> kafkaTemplate;
 	
-	private String topic = "workflow-topic";
+	private String serviceA_topic = "serviceA-topic";
 	
 	@Autowired
 	ObjectMapper objectMapper;
 	
 	
-	public void sendWorkflowEvent(WorkflowEvent workflowEvent) throws JsonProcessingException {
+	public void sendServiceAEvent(WorkflowEvent workflowEvent) throws JsonProcessingException {
 		String key = workflowEvent.getProcessInstanceId();
 		String value = objectMapper.writeValueAsString(workflowEvent);
 		
-		ProducerRecord<String,String> producerRecord = buildProducerRecord(topic,key,value);
+		ProducerRecord<String,String> producerRecord = buildProducerRecord(serviceA_topic,key,value);
 		
 		ListenableFuture<SendResult<String, String>> listenableFuture =
 				kafkaTemplate.send(producerRecord);

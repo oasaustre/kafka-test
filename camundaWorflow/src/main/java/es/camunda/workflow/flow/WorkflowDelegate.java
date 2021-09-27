@@ -7,23 +7,32 @@ import org.springframework.stereotype.Component;
 
 import es.camunda.workflow.event.domain.WorkflowEvent;
 import es.camunda.workflow.event.producer.WorkflowProducer;
+import lombok.extern.slf4j.Slf4j;
+import es.camunda.workflow.client.ProcessOrchestrateClient;
 
 @Component
+@Slf4j
 public class WorkflowDelegate implements JavaDelegate{
 
-	@Autowired
-	WorkflowProducer workflowProducer;
+	/*@Autowired
+	WorkflowProducer workflowProducer;*/
 	
+	@Autowired 
+	ProcessOrchestrateClient processOrchestrateClient;
 	
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		
 		WorkflowEvent workflowEvent = null;
-		
+		log.info("Start execute Service Task");
 		workflowEvent = createWorkflowEvent(execution);
 		
+		processOrchestrateClient.receiveActionWF(workflowEvent);
+		
+		
+		log.info("End execute Service Task");
 		//Envio de manera asíncrona del evento a Kafka
-		workflowProducer.sendWorkflowEvent(workflowEvent);
+		//workflowProducer.sendWorkflowEvent(workflowEvent);
 		
 		
 		

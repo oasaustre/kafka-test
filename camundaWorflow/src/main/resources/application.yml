@@ -13,19 +13,29 @@ camunda.bpm:
   filter:
     create: All Tasks
 #  default-serialization-format: application/json
-server.port: 8180
+server:
+  port: 8180
+  orchestrate:
+    url: localhost:8081
 
----
-spring:
-  profiles:
-    active: local
----
-spring:
-   config:
-     activate:
-      on-profile: local
-   kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 1000000
+        read-timeout: 600000
+
+#---
+#spring:
+#  profiles:
+#    active: local
+#---
+#spring:
+#   config:
+#     activate:
+#      on-profile: local
+#   kafka:
+#    producer:
+#      bootstrap-servers: localhost:9092
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer

@@ -2,11 +2,10 @@ spring:
   profiles:
     active: local
 server:
-  port: 8081
-  wf:
-    url: localhost:8180/engine-rest
+  port: 8082
 
 ---
+
 spring:
    config:
      activate:
@@ -20,4 +19,4 @@ spring:
       bootstrap-servers: localhost:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      group-id: wf-group
+      group-id: serviceA-group
