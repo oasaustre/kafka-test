@@ -11,11 +11,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.orchestration.event.domain.MessageWFResponse;
+import es.orchestration.event.domain.MessageEvent;
 import es.orchestration.event.domain.types.EventType;
+import es.orchestration.event.domain.types.GroupType;
+import es.orchestration.event.domain.types.OperationType;
+import es.orchestration.event.domain.types.ResourceType;
 import es.orchestration.wf.client.CamundaRest;
 import es.orchestration.wf.client.parameter.message.MessageParameter;
 import es.orchestration.wf.client.parameter.message.VarParam;
+import es.orchestration.wf.client.parameter.processdefinition.StartProcessParameter;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -31,17 +35,27 @@ public class ProcessOrchestrationConsumer {
 	@KafkaListener(topics = {"wf-topic"})
 	public void onMessage(ConsumerRecord<String,String> consumerRecord) throws JsonMappingException, JsonProcessingException {
 		
-		MessageWFResponse message = null;
+		MessageEvent message = null;
 		log.info("ConsumerRecord {}",consumerRecord);
 		
-		message = objectMapper.readValue(consumerRecord.value(), MessageWFResponse.class);
+		message = objectMapper.readValue(consumerRecord.value(), MessageEvent.class);
 		
-		if(message.getEventType() == EventType.MESSAGE) {
+		
+		if(message.getOperationType() == OperationType.WF && message.getWfMessage().getEventType() == EventType.MESSAGE_WITH_VARS) {
 			MessageParameter messageParam = new MessageParameter();
 			messageParam.setMessageName("InvoiceMessageEvent");
-			messageParam.setProcessInstanceId(message.getWorflowEvent().getProcessInstanceId());
+			messageParam.setProcessInstanceId(message.getWfMessage().getWorkflowExecution().getProcessInstanceId());
 			messageParam.setProcessVariables(Map.of("invoiceId", new VarParam("valor","String")));
 			camundaRest.message(messageParam);
+		}else if(message.getOperationType() == OperationType.EXTERNAL && 
+				message.getExternalMessage().getGroupType() == GroupType.PROCESS_DEFINITION &&
+				message.getExternalMessage().getResourceType() == ResourceType.START_INSTANCE) {
+			String key = message.getExternalMessage().getParams().getKey();
+			StartProcessParameter startProcessParameter = new StartProcessParameter();
+			camundaRest.startProcess(key, startProcessParameter);
+			
 		}
+		
+		log.info("Fin ProcessOrchestrationConsumer");
 	}
 }

@@ -5,17 +5,13 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import es.camunda.workflow.event.domain.WorkflowEvent;
-import es.camunda.workflow.event.producer.WorkflowProducer;
-import lombok.extern.slf4j.Slf4j;
 import es.camunda.workflow.client.ProcessOrchestrateClient;
+import es.camunda.workflow.event.domain.WorkflowExecution;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 public class WorkflowDelegate implements JavaDelegate{
-
-	/*@Autowired
-	WorkflowProducer workflowProducer;*/
 	
 	@Autowired 
 	ProcessOrchestrateClient processOrchestrateClient;
@@ -23,7 +19,7 @@ public class WorkflowDelegate implements JavaDelegate{
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		
-		WorkflowEvent workflowEvent = null;
+		WorkflowExecution workflowEvent = null;
 		log.info("Start execute Service Task");
 		workflowEvent = createWorkflowEvent(execution);
 		
@@ -39,9 +35,9 @@ public class WorkflowDelegate implements JavaDelegate{
 	}
 	
 	
-	private WorkflowEvent createWorkflowEvent(DelegateExecution execution) {
+	private WorkflowExecution createWorkflowEvent(DelegateExecution execution) {
 		
-		WorkflowEvent workflowEvent = new WorkflowEvent();
+		WorkflowExecution workflowEvent = new WorkflowExecution();
 		
 		workflowEvent.setCurrentActivityId(execution.getCurrentActivityId());
 		workflowEvent.setProcessBusinessKey(execution.getProcessBusinessKey());

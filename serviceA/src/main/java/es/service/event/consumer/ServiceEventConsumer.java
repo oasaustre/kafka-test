@@ -12,8 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.service.event.bpm.IProcedureBPM;
 import es.service.event.bpm.TaskFactory;
-import es.service.event.domain.MessageWFResponse;
-import es.service.event.domain.WorkflowEvent;
+import es.service.event.domain.MessageEvent;
+import es.service.event.domain.WorkflowExecution;
+import es.service.event.domain.types.EventType;
+import es.service.event.domain.types.OperationType;
 import es.service.event.producer.ServiceEventProducer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +37,8 @@ public class ServiceEventConsumer {
 		
 		ApplicationContext context=null;
 		IProcedureBPM procedureBPM = null;
-		WorkflowEvent wfEvent = null;
-		MessageWFResponse message = null;
+		WorkflowExecution workflowExecution = null;
+		MessageEvent message = null;
 		
 	       try {
 
@@ -49,13 +51,15 @@ public class ServiceEventConsumer {
 		
 		log.info("Consumo del evento del ConsumerRecord {}",consumerRecord);
 		
-		wfEvent = objectMapper.readValue(consumerRecord.value(), WorkflowEvent.class);
+		workflowExecution = objectMapper.readValue(consumerRecord.value(), WorkflowExecution.class);
 		
-		procedureBPM = taskFactory.getTask(wfEvent.getCurrentActivityId());
+		procedureBPM = taskFactory.getTask(workflowExecution.getCurrentActivityId());
 		
-		message = procedureBPM.execute(wfEvent);
+		message = procedureBPM.execute(workflowExecution);
 		
-		if(message.isResponse()) {
+		if(message.getOperationType() != null && 
+				message.getOperationType() == OperationType.WF &&
+				message.getWfMessage().getEventType() == EventType.MESSAGE_WITH_VARS) {
 			
 			serviceEventProducer.sendWfEvent(message);
 			log.info("Envio del evento {}",message);	

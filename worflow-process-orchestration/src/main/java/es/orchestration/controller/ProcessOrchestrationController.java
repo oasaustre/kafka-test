@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import es.orchestration.event.domain.WorkflowEvent;
+import es.orchestration.event.domain.WorkflowExecution;
 import es.orchestration.event.mapper.FlowMapper;
 import es.orchestration.event.producer.WorkflowOrchestrationProducer;
 import lombok.extern.slf4j.Slf4j;
@@ -27,18 +27,18 @@ public class ProcessOrchestrationController {
 	WorkflowOrchestrationProducer producer;
 	
 	@PostMapping(value = "/receive")
-	public ResponseEntity<WorkflowEvent> receiveActionWF(@RequestBody WorkflowEvent workflowEvent) throws JsonProcessingException{
+	public ResponseEntity<WorkflowExecution> receiveActionWF(@RequestBody WorkflowExecution workflowExecution) throws JsonProcessingException{
 		//TRatar respuesta y realizar mapeo
 		String topicService = null;
 		log.info("Inicio llamada API ProcessOrchestrationController");
-		topicService = flowMapper.getServiceByTask(workflowEvent.getCurrentActivityId());
+		topicService = flowMapper.getServiceByTask(workflowExecution.getCurrentActivityId());
 		log.info("Antes envio evento a Kafka de {}",topicService);
-		sendEventService(topicService, workflowEvent);
+		sendEventService(topicService, workflowExecution);
 		log.info("Despues envio evento a Kafka de {}",topicService);
-		return ResponseEntity.status(HttpStatus.OK).body(workflowEvent);
+		return ResponseEntity.status(HttpStatus.OK).body(workflowExecution);
 	}
 	
-	private void sendEventService(String topicService,WorkflowEvent workflowEvent) throws JsonProcessingException {
+	private void sendEventService(String topicService,WorkflowExecution workflowEvent) throws JsonProcessingException {
 		if(topicService.equalsIgnoreCase("serviceA-topic")) {
 			producer.sendServiceAEvent(workflowEvent);
 		} else if(topicService.equalsIgnoreCase("serviceB-topic")){

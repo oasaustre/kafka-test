@@ -14,7 +14,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import es.orchestration.event.domain.WorkflowEvent;
+import es.orchestration.event.domain.WorkflowExecution;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -31,9 +31,9 @@ public class WorkflowOrchestrationProducer {
 	ObjectMapper objectMapper;
 	
 	
-	public void sendServiceAEvent(WorkflowEvent workflowEvent) throws JsonProcessingException {
-		String key = workflowEvent.getProcessInstanceId();
-		String value = objectMapper.writeValueAsString(workflowEvent);
+	public void sendServiceAEvent(WorkflowExecution workflowExecution) throws JsonProcessingException {
+		String key = workflowExecution.getProcessInstanceId();
+		String value = objectMapper.writeValueAsString(workflowExecution);
 		
 		ProducerRecord<String,String> producerRecord = buildProducerRecord(serviceA_topic,key,value);
 		

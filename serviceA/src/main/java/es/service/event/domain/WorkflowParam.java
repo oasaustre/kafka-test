@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class WorkflowEvent {
-	
-	private String processInstanceId;
-	private String currentActivityId;
-	private String processBusinessKey;
+public class WorkflowParam {
 
+	private String key;
+	
 }

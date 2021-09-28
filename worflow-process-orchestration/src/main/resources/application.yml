@@ -21,3 +21,15 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: wf-group
+
+logging:
+  level:
+    es.orchestration.wf.client: DEBUG
+    
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 1000000
+        read-timeout: 600000
+        logger-level: FULL

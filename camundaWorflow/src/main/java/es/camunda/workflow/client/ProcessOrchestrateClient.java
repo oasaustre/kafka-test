@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import es.camunda.workflow.event.domain.WorkflowEvent;
+import es.camunda.workflow.event.domain.WorkflowExecution;
 
 
 @FeignClient(name = "processOrchestrateClient",url = "${server.orchestrate.url}")
 public interface ProcessOrchestrateClient {
 
 	@PostMapping(value = "/api/process/receive")
-	public ResponseEntity<WorkflowEvent> receiveActionWF(@RequestBody WorkflowEvent workflowEvent);
+	public ResponseEntity<WorkflowExecution> receiveActionWF(@RequestBody WorkflowExecution workflowEvent);
 	
 }

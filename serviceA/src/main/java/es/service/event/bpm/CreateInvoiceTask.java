@@ -2,23 +2,24 @@ package es.service.event.bpm;
 
 import org.springframework.stereotype.Component;
 
-import es.service.event.domain.MessageWFResponse;
-import es.service.event.domain.WorkflowEvent;
+import es.service.event.domain.MessageEvent;
+import es.service.event.domain.WFMessage;
+import es.service.event.domain.WorkflowExecution;
 import es.service.event.domain.types.ActivityType;
 import es.service.event.domain.types.EventType;
+import es.service.event.domain.types.OperationType;
 
 @Component
 public class CreateInvoiceTask implements IProcedureBPM{
 
 	@Override
-	public MessageWFResponse execute(WorkflowEvent wfEvent) {
-		MessageWFResponse message = new MessageWFResponse();
+	public MessageEvent execute(WorkflowExecution wfEvent) {
+		MessageEvent message = new MessageEvent();
 		
-		message.setWorflowEvent(wfEvent);
-		message.setEventType(EventType.MESSAGE);
-		message.setActivityType(ActivityType.SERVICE_TASK);
-		message.setResponse(Boolean.TRUE);
 		
+		message.setOperationType(OperationType.WF);
+		message.setWfMessage(new WFMessage(wfEvent, ActivityType.SERVICE_TASK,EventType.MESSAGE_WITH_VARS));
+				
 		return message;
 	}
 

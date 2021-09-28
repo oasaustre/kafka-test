@@ -15,7 +15,8 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.service.event.domain.MessageWFResponse;
+import es.service.event.domain.MessageEvent;
+import es.service.event.domain.types.OperationType;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -30,8 +31,17 @@ public class ServiceEventProducer {
 	ObjectMapper objectMapper;
 	
 	
-	public void sendWfEvent(MessageWFResponse message) throws JsonProcessingException {
-		String key = message.getWorflowEvent().getProcessInstanceId();
+	public void sendWfEvent(MessageEvent message) throws JsonProcessingException {
+		String key = "";
+		
+		if(message.getOperationType() == OperationType.WF) {
+			key = message.getWfMessage().getWorkflowExecution().getProcessInstanceId();
+		}else {
+			key = "external";
+		}
+		
+		String keyCopy = key;
+	
 		String value = objectMapper.writeValueAsString(message);
 		
 		ProducerRecord<String,String> producerRecord = buildProducerRecord(wf_topic,key,value);
@@ -43,13 +53,13 @@ public class ServiceEventProducer {
 
 			@Override
 			public void onSuccess(SendResult<String, String> result) {
-				handleSuccess(key,value,result);
+				handleSuccess(keyCopy,value,result);
 				
 			}
 
 			@Override
 			public void onFailure(Throwable ex) {
-				handleFailure(key,value,ex);
+				handleFailure(keyCopy,value,ex);
 				
 			}
 		});

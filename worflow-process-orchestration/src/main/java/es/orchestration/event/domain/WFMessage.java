@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class MessageWFResponse {
-	private WorkflowEvent worflowEvent;
+public class WFMessage {
+	private WorkflowExecution workflowExecution;
 	private ActivityType activityType;
 	private EventType eventType;
-	private boolean isResponse;
+	
+
 }

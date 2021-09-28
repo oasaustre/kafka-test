@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class WorkflowEvent {
+public class WorkflowExecution {
 
 	private String processInstanceId;
 	private String currentActivityId;
