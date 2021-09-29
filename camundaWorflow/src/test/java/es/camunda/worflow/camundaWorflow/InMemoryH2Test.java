@@ -11,8 +11,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import es.camunda.workflow.LoggerDelegate;
-import es.camunda.workflow.ProcessConstants;
+import es.juntadeandalucia.gesstiona.workflow.LoggerDelegate;
+import es.juntadeandalucia.gesstiona.workflow.ProcessConstants;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.*;
 import static org.junit.Assert.*;
